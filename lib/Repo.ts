@@ -17,7 +17,7 @@ export class Repo {
 
         return command?.success ?
             (command.text() || "")
-            .split(/^commit\s+/)
+            .split(/^commit\s+/m)
             .filter(item => !!item)
             .map(log => CommitInfo.parse(log)) : [];
     }
