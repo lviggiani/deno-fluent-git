@@ -11,7 +11,6 @@ export class CommitInfo {
 
 
     static parse(log:string):CommitInfo {
-        console.log(log);
         const rows = log.split(/\n/);
         return {
             hash: rows[0],
