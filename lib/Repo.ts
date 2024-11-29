@@ -1,5 +1,6 @@
 import { cmd } from "./command-utils.ts";
 import { resolve } from "jsr:@std/path@^0.224.0";
+import { CommitInfo } from "./CommitInfo.ts";
 
 const output = await cmd("git", ["--version"]).catch(_ => { throw "git not installed" });
 console.log(`using ${output?.text()}`);
@@ -11,10 +12,14 @@ export class Repo {
         this.dir = dir;
     }
 
-    async getCommits():Promise<string[]>{
+    async getCommits():Promise<CommitInfo[]>{
         const command = (await cmd("git", ["log"], this.dir));
-        if (!command?.success) return [];
-        return [command?.text() || ""];
+
+        return command?.success ?
+            (command.text() || "")
+            .split(/^commit\s+/)
+            .filter(item => !!item)
+            .map(log => CommitInfo.parse(log)) : [];
     }
 
     static async open(dir:string):Promise<Repo|undefined>{
