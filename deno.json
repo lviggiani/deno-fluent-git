@@ -1,6 +1,10 @@
 {
+  "name": "@lviggiani/deno-fluent-git",
+  "version": "0.0.1",
+  "exports": "./mod.ts",
+  "license": "BSD",
   "tasks": {
-    "dev": "deno run --allow-all --watch main.ts",
-    "test": "deno test unit_test --alow-all"
+    "dev": "deno run --allow-all --watch index.ts",
+    "test": "deno test unit_test --allow-all"
   }
 }
