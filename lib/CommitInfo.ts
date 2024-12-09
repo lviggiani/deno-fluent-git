@@ -10,6 +10,11 @@ export class CommitInfo {
     comment?: string;
 
 
+    /**
+     * Parses commit info block from `git log` command outpu
+     * @param log git log block
+     * @returns CommitInfo structure
+     */
     static parse(log:string):CommitInfo {
         const rows = log.split(/\n/);
         return {

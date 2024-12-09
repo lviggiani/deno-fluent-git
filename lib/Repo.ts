@@ -16,6 +16,10 @@ export class Repo {
         this.#dir = dir;
     }
 
+    /**
+     * Gets all the commits of the repo
+     * @returns an array of CommitInfo includin hash, ahtor, date-time, commit message
+     */
     async getCommits():Promise<CommitInfo[]>{
         const command = await cmd("git", ["log"], this.#dir);
 
@@ -26,6 +30,10 @@ export class Repo {
             .map(log => CommitInfo.parse(log)) : [];
     }
 
+    /**
+     * Show current repo status
+     * @returns a GitStatus structure showing added, changed, removed and untracked files
+     */
     async getStatus():Promise<GitStatus>{
         const ret = {
             added: [],
@@ -50,11 +58,21 @@ export class Repo {
             }, ret) : ret;
     }
 
+    /**
+     * Stages all files including untracked
+     * @returns true if success or false otherwise
+     */
     async addAll():Promise<boolean>{
         const command = await cmd("git", ["add", "--all"], this.#dir);
         return !!command?.success;
     }
 
+    /**
+     * Commit changes
+     * @param message Commit message (required)
+     * @param author Commit author (defaults to Repo.author if set) (required)
+     * @returns a CommitInfo structure in case of success or undefined
+     */
     async commit(message:string, author:GitAuthor|undefined = this.#author):Promise<CommitInfo|undefined>{
         if (!message) throw "message connot be empty";
         if (!author) throw "missing author";
@@ -77,7 +95,11 @@ export class Repo {
         this.#author = value;
     }
 
-
+    /**
+     * Open an existing local git repository
+     * @param dir path to local git repo
+     * @returns a Repo instance to manage the repo
+     */
     static async open(dir:string):Promise<Repo|undefined>{
         dir = resolve(dir);
         const output = await cmd("git", ["rev-parse", "--git-dir"], dir).catch(_ => undefined);
@@ -86,6 +108,11 @@ export class Repo {
         return new Repo(resolve(output!.text().trim().replace(/\.git$/, "")));
     }
 
+    /**
+     * Inits an existing folder as a local git repository
+     * @param dir path to existing local folder
+     * @returns a Repo instance to manage the repo
+     */
     static async init(dir:string):Promise<Repo|undefined>{
         dir = resolve(dir);
         const fileInfo = await Deno.stat(dir);
