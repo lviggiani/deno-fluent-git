@@ -5,6 +5,9 @@ Uses native git commands rather than libgit2 direct binding
 
 **Very early stage**
 
+## Requirements
+git 2.x
+
 ## Example
 
 ### Create a repository, add file and commit
